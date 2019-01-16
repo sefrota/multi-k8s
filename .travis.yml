@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t sefrota/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+  - docker run sefrota/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t sefrota/multi-client ./client
+  - docker build -t sefrota/multi-nginx ./nginx
+  - docker build -t sefrota/multi-worker ./worker
+  - docker build -t sefrota/multi-server ./server
+  #Docker Login
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Take those images and push them to the Docker Hub
+  - docker push sefrota/multi-client
+  - docker push sefrota/multi-nginx
+  - docker push sefrota/multi-worker
+  - docker push sefrota/multi-server
