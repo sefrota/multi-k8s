@@ -9,7 +9,6 @@ docker push sefrota/multi-server:$SHA
 docker push sefrota/multi-worker:latest
 docker push sefrota/multi-worker:$SHA
 
-
 kubectl apply -f k8s
 
 kubectl set image deployments/server-deployment server=sefrota/multi-server:$SHA
